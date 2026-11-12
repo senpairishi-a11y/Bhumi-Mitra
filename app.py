@@ -86,7 +86,10 @@ T = {
 @st.cache_resource
 def init_ee():
     try:
-        creds = dict(st.secrets["gee"])
+        if "gee_json" in st.secrets:
+            creds = json.loads(st.secrets["gee_json"])
+        else:
+            creds = dict(st.secrets["gee"])
         c = ee.ServiceAccountCredentials(creds["client_email"], key_data=json.dumps(creds))
         ee.Initialize(c, project=creds.get("project_id"))
     except Exception:
